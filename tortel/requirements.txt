@@ -1,3 +1,0 @@
-extraction
-requests
-psycopg2
