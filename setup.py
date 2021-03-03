@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="tortel",
     version="",
-    author="",
-    author_email="",
+    author="Selin Kurt",
+    author_email="seliin.kurttt@gmail.com",
     description="Product similarity detection with NLP",
     long_description=long_description,
     long_description_content_type="text/markdown",
