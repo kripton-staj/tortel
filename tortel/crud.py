@@ -13,9 +13,9 @@ s = Session()
 
 extracted_titles = extract_data.extracted_titles
 for value in extracted_titles:
-    product = s.query(models.Product).filter(models.Product.url.ilike(value)).first()
-    if product is None:
-        product = models.Product(url=value, title=extracted_titles[value])
+    product = s.query(models.ProductPage).filter(models.ProductPage.url.ilike(value)).first()
+    if not product:
+        product = models.ProductPage(url=value, title=extracted_titles[value])
         s.add(product)
     else:
         product.title = extracted_titles[value]
