@@ -11,13 +11,12 @@ def read_file():
 
 
 def extract_title(new_list):
-    extracted_titles = []
+    extracted_titles = {}
 
     for url in new_list:
         html = requests.get(url).text
         extracted = extraction.Extractor().extract(html, source_url=url)
-        extracted_titles.append(extracted.title)
-
+        extracted_titles[url] = extracted.title
     return extracted_titles
 
 
