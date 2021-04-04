@@ -1,6 +1,6 @@
 import config
 import models
-import extracter
+import extractor
 from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -20,10 +20,10 @@ def database_operations():
     for value in product_body:
         soup = BeautifulSoup(value.body, "lxml")
         url = value.url
-        title = extracter.extract_title(soup)
-        description = extracter.extract_description(soup)
-        breadcrumbs = extracter.extract_breadcrumbs(soup)
-        specifications = extracter.extract_specifications(soup)
+        title = extractor.extract_title(soup)
+        description = extractor.extract_description(soup)
+        breadcrumbs = extractor.extract_breadcrumbs(soup)
+        specifications = extractor.extract_specifications(soup)
 
         product_data = s.query(models.ProductData).filter(models.ProductData.url.ilike(url)).first()
         if not product_data:
