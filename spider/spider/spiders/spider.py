@@ -1,4 +1,5 @@
 import scrapy
+import json
 from ..items import SpiderItem
 import config
 import models
@@ -17,8 +18,11 @@ class Spider(scrapy.Spider):
     s = Session()
 
     def start_requests(self):
-        with open("url_list.txt", "r") as f:
-            urls = [line.rstrip() for line in f.readlines()]
+        with open("results-20210322-162308.json", "r") as f:
+            urls = []
+            json_list = json.load(f)
+            for url_name in json_list:
+                urls.append(url_name['url'])
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0'}
         for url in urls:
             yield scrapy.Request(url=url, headers=headers, callback=self.parse)
