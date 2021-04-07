@@ -1,5 +1,5 @@
 def extract_title(soup):
-    return soup.title.text
+    return soup.title.text.replace('\\n', '').replace('\\t', '').replace('\\r', '')
 
 
 def extract_description(soup):
@@ -20,7 +20,12 @@ def extract_description(soup):
         description = soup.find(attrs=class_name)
         if description:
             description = description.get_text(strip=True)
+            description = description.replace('\\n', '').replace('\\t', '').replace('\\r', '')
             break
+    try:
+        description = " ".join(description.split())
+    except AttributeError as a:
+        print(a)
 
     return description
 
@@ -35,7 +40,12 @@ def extract_breadcrumbs(soup):
         breadcrumbs = soup.find(attrs=brd)
         if breadcrumbs:
             breadcrumbs = breadcrumbs.get_text(strip=True)
+            breadcrumbs = breadcrumbs.replace('\\n', '').replace('\\t', '').replace('\\r', '')
             break
+    try:
+        breadcrumbs = " ".join(breadcrumbs.split())
+    except AttributeError as a:
+        print(a)
 
     return breadcrumbs
 
@@ -54,6 +64,11 @@ def extract_specifications(soup):
         specification = soup.find(attrs=class_name)
         if specification:
             specification = specification.get_text(strip=True)
+            specification = specification.replace('\\n', '').replace('\\t', '').replace('\\r', '')
             break
+    try:
+        specification = " ".join(specification.split())
+    except AttributeError as a:
+        print(a)
 
     return specification
