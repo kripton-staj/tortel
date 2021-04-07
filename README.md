@@ -1,11 +1,11 @@
 # tortel
 Product similarity detection with NLP
 
-###requirements  :  
+### requirements  :  
 * Python 3.9
 * Postgresql 10.15
 
-###installation:
+### installation:
 
 1. **git clone https://github.com/kripton-staj/tortel.git**
    
@@ -24,9 +24,11 @@ Product similarity detection with NLP
 4. Edit your DATABASE_URI info in 'config.py'
 
 
-5. **python3 extract_data.py**
+5. Run **scrapy crawl spider** in the top level directory spider. This command will write the html to the database for read it from there later.
 
-   **python3 crud.py**
+
+6. ***python3*** utils.py
+
 
 
 
