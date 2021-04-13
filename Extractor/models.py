@@ -23,7 +23,8 @@ class ProductData(Base):
     description = Column(TEXT)
     breadcrumbs = Column(String)
     specifications = Column(String)
+    ean = Column(String)
 
     def __repr__(self):
-        return "<ProductPage(url='{}', title='{}', description='{}', breadcrumbs={}, specifications={})>" \
-            .format(self.url, self.title, self.description, self.breadcrumbs, self.specifications)
+        return "<ProductPage(url='{}', title='{}', description='{}', breadcrumbs='{}', specifications='{}', ean='{}')>" \
+            .format(self.url, self.title, self.description, self.breadcrumbs, self.specifications, self.ean)
