@@ -24,11 +24,12 @@ def database_operations():
         description = extractor.extract_description(soup)
         breadcrumbs = extractor.extract_breadcrumbs(soup)
         specifications = extractor.extract_specifications(soup)
+        ean = ""
 
         product_data = s.query(models.ProductData).filter(models.ProductData.url.ilike(url)).first()
         if not product_data:
             product_data = models.ProductData(url=url, title=title, description=description,
-                                              breadcrumbs=breadcrumbs, specifications=specifications)
+                                              breadcrumbs=breadcrumbs, specifications=specifications, ean=ean)
             s.add(product_data)
         else:
             product_data.title = title
@@ -40,4 +41,23 @@ def database_operations():
     s.close()
 
 
+# This function has been written to see how much data we can extract from the given url
+def database_query():
+    result = s.query(models.ProductData).all()
+    a, b, c, d = 0, 0, 0, 0
+
+    for row in result:
+        if row.title:
+            a += 1
+        if row.description:
+            b += 1
+        if row.breadcrumbs:
+            c += 1
+        if row.specifications:
+            d += 1
+    print('There are %d line in database and found %d title data, %d description data,'
+          ' %d breadcrumbs data, %d specifications data' % (len(result), a, b, c, d))
+
+
 database_operations()
+# database_query()
