@@ -9,10 +9,11 @@ class ProductBody(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String)
     body = Column(String)
+    ean = Column(String)
 
     def __repr__(self):
-        return "<ProductBody(url='{}', body='{}')>" \
-            .format(self.url, self.body)
+        return "<ProductBody(url='{}', body='{}', ean='{})>" \
+            .format(self.url, self.body, self.ean)
 
 
 class ProductData(Base):
