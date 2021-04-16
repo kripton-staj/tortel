@@ -4,7 +4,6 @@ import extractor
 from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import func
 from bs4 import BeautifulSoup
 
 
@@ -25,11 +24,12 @@ def database_operations():
         description = extractor.extract_description(soup)
         breadcrumbs = extractor.extract_breadcrumbs(soup)
         specifications = extractor.extract_specifications(soup)
+        all_data = str(title)+" "+str(description)+" "+str(breadcrumbs)+" "+str(specifications)
 
         product_data = s.query(models.ProductData).filter(models.ProductData.url.ilike(url)).first()
         if not product_data:
-            product_data = models.ProductData(url=url, title=title, description=description,
-                                              breadcrumbs=breadcrumbs, specifications=specifications, ean=ean)
+            product_data = models.ProductData(url=url, title=title, description=description, breadcrumbs=breadcrumbs,
+                                              specifications=specifications, ean=ean, all_data=all_data)
             s.add(product_data)
         else:
             product_data.ean = ean
@@ -37,13 +37,10 @@ def database_operations():
             product_data.description = description
             product_data.breadcrumbs = breadcrumbs
             product_data.specifications = specifications
+            product_data.all_data = str(title)+" "+str(description)+" "+str(breadcrumbs)+" "+str(specifications)
 
     s.commit()
     s.close()
-
-    result = s.query(func.array_agg(models.ProductData.url),
-                     func.count(models.ProductData.ean)).group_by(models.ProductData.ean).all()
-    print(result)
 
 
 # This function has been written to see how much data we can extract from the given url
