@@ -24,11 +24,27 @@ Product similarity detection with NLP
 4. Edit your DATABASE_URI info in 'config.py'
 
 
-5. Run **scrapy crawl spider** in the top level directory spider. This command will write the html to the database for read it from there later.
+5. Run the below command in the top level directory spider tortel/spider.
+   
+   This command will write the html to the database for read it from there later.
+      
+   ```
+   scrapy crawl spider
+   ```
 
 
-6. ***python3*** utils.py
+6. Run the below command to extracting data from web pages written into product_body table.
 
+   ```
+   python3 Extractor/utils.py
+   ```
+
+
+7. Run the below command to check product similarity with NLP
+    
+   ```
+   python3 product_similarity/product_similarity.py
+   ```
 
 
 
