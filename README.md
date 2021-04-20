@@ -36,7 +36,7 @@ Product similarity detection with NLP
 6. Run the below command to extracting data from web pages written into product_body table.
 
    ```
-   python3 Extractor/utils.py
+   python3 extractor/main.py
    ```
 
 
