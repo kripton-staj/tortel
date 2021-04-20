@@ -1,9 +1,9 @@
 import scrapy
 import json
 from ..items import SpiderItem
-import config
-import models
-from models import Base
+import tortel.spider.config as config
+import tortel.spider.models as models
+from tortel.spider.models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
