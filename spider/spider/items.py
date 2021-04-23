@@ -8,4 +8,5 @@ import scrapy
 
 class SpiderItem(scrapy.Item):
     url = scrapy.Field()
-    body = scrapy.Field()
+    html = scrapy.Field()
+

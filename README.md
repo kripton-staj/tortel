@@ -21,26 +21,42 @@ Product similarity detection with NLP
 **CREATE DATABASE product;**
    
 
-4. Edit your DATABASE_URI info in 'config.py'
+4. Edit your DATABASE_URI info in ***common/config.py***
 
 
-5. Run the below command in the top level directory spider tortel/spider.
+5. Run the script in tortel/scripts directory.
+   
+   Example call for the script:
+    ```
+    python scripts/load_initial_data.py -f results.json
+    ```
+    ***NOTE***: JSON file must contains **'url'** and **'ean'** keys.
+
+    {  
+    "ean": "ean_code"
+      
+    "url": "url_name"
+
+     }
+
+
+6. Run the below command in the top level directory spider tortel/spider.
    
    This command will write the html to the database for read it from there later.
       
    ```
-   scrapy crawl spider
+   scrapy crawl tortel_spider
    ```
 
 
-6. Run the below command to extracting data from web pages written into product_body table.
+7. Run the below command to extracting data from web pages written into product_page table.
 
    ```
    python3 extractor/main.py
    ```
 
 
-7. Run the below command to check product similarity with NLP
+8. Run the below command to check product similarity with NLP
     
    ```
    python3 product_similarity/product_similarity.py
