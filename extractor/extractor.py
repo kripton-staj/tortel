@@ -1,4 +1,5 @@
 import json
+from bs4 import BeautifulSoup
 
 
 def extract_title(soup):
@@ -114,4 +115,15 @@ def extract_specifications(soup):
             specification = " ".join(specification.split())
             break
 
-    return specification
+    return specification,
+
+
+def extract_product_text(html):
+    soup = BeautifulSoup(html, "lxml")
+    title = extract_title(soup)
+    description = extract_description(soup)
+    breadcrumbs = extract_breadcrumbs(soup)
+    specifications = extract_specifications(soup)
+    product_text = str(title) + " " + str(description) + " " + str(
+        breadcrumbs) + " " + str(specifications)
+    return product_text
