@@ -115,7 +115,7 @@ def extract_specifications(soup):
             specification = " ".join(specification.split())
             break
 
-    return specification,
+    return specification
 
 
 def extract_product_text(html):

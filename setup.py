@@ -1,10 +1,13 @@
 import setuptools
+from setuptools import find_packages
+
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="tortel",
+    packages=find_packages(),
     version="",
     author="Selin Kurt",
     author_email="seliin.kurttt@gmail.com",
