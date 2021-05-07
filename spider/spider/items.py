@@ -6,8 +6,7 @@
 import scrapy
 
 
-class ProductItem(scrapy.Item):
+class SpiderItem(scrapy.Item):
     url = scrapy.Field()
-    title = scrapy.Field()
-    description = scrapy.Field()
-    breadcrumbs = scrapy.Field()
+    html = scrapy.Field()
+
