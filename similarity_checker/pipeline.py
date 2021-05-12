@@ -1,5 +1,8 @@
+import pandas as pd
 import spacy
 from nltk.stem.snowball import SnowballStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 
 def tokenization(product_text):
@@ -57,3 +60,29 @@ def stemming(tokens_without_sw_and_punct):
     tokens_after_stemming = [tokens_after_stemming1,
                              tokens_after_stemming2]
     return tokens_after_stemming
+
+
+def tfidf_vectorizer(tokens_after_stemming):
+    """
+    Creates vectors for the tokens by using tfidf vectorizer.
+    :param tokens_after_stemming: list of tokens that stemming applied
+    :return: tfidf: tfidf vectors for the tokens
+    :rtype: class 'scipy.sparse.csr.csr_matrix'
+    """
+    vectorizer = TfidfVectorizer(analyzer=lambda x: x)
+
+    tfidf = vectorizer.fit_transform(tokens_after_stemming)
+    print(pd.DataFrame(tfidf.toarray(),
+                       columns=vectorizer.get_feature_names()))
+    return tfidf
+
+
+def check_cosine_distance(tfidf):
+    """
+    Calculates cosine distance between vectors by using linear kernel.
+    :param tfidf: vectors for the tokens
+    :return: cosine_distance: calculated cosine distance between vectors
+    :rtype: class 'numpy.ndarray'
+    """
+    cosine_distance = linear_kernel(tfidf[0], tfidf[1]).flatten()
+    return cosine_distance

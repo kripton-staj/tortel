@@ -1,5 +1,7 @@
-from similarity_checker.pipeline import (remove_stop_words_and_puncts,
-                                         stemming, tokenization)
+from similarity_checker.pipeline import (check_cosine_distance,
+                                         remove_stop_words_and_puncts,
+                                         stemming, tfidf_vectorizer,
+                                         tokenization)
 
 
 class TestSimilarityChecker:
@@ -49,21 +51,24 @@ class TestSimilarityChecker:
         assert all([a == b for a, b in zip(actual, expected)])
 
     def test_stemming(self):
-        test_data = [['55,4', 'maanden', 'aankoop', 'Tamron', 'krijgt',
-                      'jaar'],
-                     ['voorraad', 'strekt', 'uitsluitend', 'producten',
-                      'verzonden', 'Fnac.be']]
+        test_data = [['55,4', 'maanden', 'aankoop', 'Tamron', 'krijgt', 'jaar'],
+                     ['voorraad', 'strekt', 'producten', 'verzonden',
+                      '55,4', 'Tamron']]
 
         actual = stemming(test_data)
         expected = [['55,4', 'maand', 'aankop', 'tamron', 'krijgt', 'jar'],
-                    ['voorrad', 'strekt', 'uitsluit', 'product', 'verzond',
-                     'fnac.b']]
+                    ['voorrad', 'strekt', 'product', 'verzond', '55,4',
+                     'tamron']]
 
         assert all([a == b for a, b in zip(actual, expected)])
 
 
 if __name__ == '__main__':
-    test1 = TestSimilarityChecker()
-    test1.test_tokenization()
-    test1.test_remove_stop_words_and_puncts()
-    test1.test_stemming()
+    data = [['lg', 'dsn7cy', 'soundbar', 'subwoofer', 'zwart', 'soundbar',
+             'subwoofer', 'draadloz', 'subwoofer', '3,1', 'kanal',
+             'spraakbestur', 'wifi', 'bluetooth', 'breedt', '89', 'cm'],
+            ['lg', 'dsn7y', 'lg', 'soundbar', '3.1.2-kanal', 'subwoofer',
+             'geluidsbalk', 'nominal', 'uitgang', 'vermog', 'total', '380',
+             'watt', 'versterker', 'geintegreerd', 'wi-fi']]
+    tfidf = tfidf_vectorizer(data)
+    check_cosine_distance(tfidf)
