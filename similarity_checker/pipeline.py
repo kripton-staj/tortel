@@ -1,8 +1,7 @@
-import pandas as pd
 import spacy
+from distance import jaccard
 from nltk.stem.snowball import SnowballStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
+from simhash import Simhash
 
 
 def tokenization(product_text):
@@ -52,6 +51,7 @@ def stemming(tokens_without_sw_and_punct):
     :return: list of tokens after applying stemming
     :rtype: class 'list'
     """
+
     stemmer = SnowballStemmer(language='dutch')
     tokens_after_stemming1 = [stemmer.stem(token) for token
                               in tokens_without_sw_and_punct[0]]
@@ -62,27 +62,22 @@ def stemming(tokens_without_sw_and_punct):
     return tokens_after_stemming
 
 
-def tfidf_vectorizer(tokens_after_stemming):
-    """
-    Creates vectors for the tokens by using tfidf vectorizer.
-    :param tokens_after_stemming: list of tokens that stemming applied
-    :return: tfidf: tfidf vectors for the tokens
-    :rtype: class 'scipy.sparse.csr.csr_matrix'
-    """
-    vectorizer = TfidfVectorizer(analyzer=lambda x: x)
+def sim_hash(tokens_after_stemming):
+    vector1 = Simhash(tokens_after_stemming[0])
+    vector2 = Simhash(tokens_after_stemming[1])
+    vector1_value = float(vector1.value)
+    vector2_value = float(vector2.value)
 
-    tfidf = vectorizer.fit_transform(tokens_after_stemming)
-    print(pd.DataFrame(tfidf.toarray(),
-                       columns=vectorizer.get_feature_names()))
-    return tfidf
+    if vector1_value > vector2_value:
+        similarity = vector2_value/vector1_value
+    else:
+        similarity = vector1_value/vector2_value
+
+    return similarity
 
 
-def check_cosine_distance(tfidf):
-    """
-    Calculates cosine distance between vectors by using linear kernel.
-    :param tfidf: vectors for the tokens
-    :return: cosine_distance: calculated cosine distance between vectors
-    :rtype: class 'numpy.ndarray'
-    """
-    cosine_distance = linear_kernel(tfidf[0], tfidf[1]).flatten()
-    return cosine_distance
+def jaccard_similarity(tokens_after_stemming):
+    similarity = jaccard(tokens_after_stemming[0],
+                         tokens_after_stemming[1])
+
+    return 1-similarity
