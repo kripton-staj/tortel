@@ -1,4 +1,6 @@
 import json
+import re
+
 from bs4 import BeautifulSoup
 
 
@@ -9,7 +11,6 @@ def extract_title(soup):
 
 def extract_description(soup):
     description = ""
-
     class_names = [{"id": "product_omschrijving"},
                    {"class": "product data content"},
                    {"class": "std product-description"},
@@ -37,12 +38,15 @@ def extract_description(soup):
                    {"class": "product-collateral"}]
 
     for class_name in class_names:
-        description = soup.find(attrs=class_name)
-        if description:
-            description = description.get_text(strip=True)
-            description = description.replace('\\n', '').\
+        class_tag = soup.findAll(attrs=class_name)
+        if class_tag:
+            for content in class_tag:
+                description += content.text + " "
+            description = description.replace('\\n', ''). \
                 replace('\\t', '').replace('\\r', '')
             description = " ".join(description.split())
+            description = re.sub(r'[^\x00-\x7F]+', ' ', str(description)).\
+                encode('ascii', 'ignore').decode('unicode_escape').strip()
             break
 
     if not description:
@@ -67,63 +71,9 @@ def extract_description(soup):
     return description
 
 
-def extract_breadcrumbs(soup):
-    breadcrumbs = []
-    brd_array = [{"class": "breadcrumbs__link"}, {"class": "breadcrumb"},
-                 {"id": "breadcrumb"}, {"id": "breadcrumbs"},
-                 {"id": "crumbar-content"}, {"class": "breadcrumbs"},
-                 {"class": "c-breadcrumb"}, {"class": "nav nav-tabs"},
-                 {"class": "woocommerce-breadcrumb"},
-                 {"class": "Breadcrumb-module__root___2XZI0 col-6-m ProductDetailPage-module__breadcrumb___SVrjj"},
-                 {"class": "f-productHeader js-articleHeader"}]
-
-    for brd in brd_array:
-        breadcrumbs_list = soup.find(attrs=brd)
-        if breadcrumbs_list:
-            for a in breadcrumbs_list.find_all('a', href=True):
-                breadcrumbs.append(str(a['href']))
-            break
-
-    return breadcrumbs
-
-
-def extract_specifications(soup):
-    specification = ""
-    spec_class_names = [{"class": "specifications"}, {"class": "specificaties"},
-                        {"id": "description-collapse"},
-                        {"id": "product-attribute-specs-table"},
-                        {"id": "product-specs-content"},
-                        {"class": "fg-box bpx0 bpy2 bsx3 bsy1 mpx0 mpy2 msx3 msy1 spx0 spy2 ssx3 ssy1"},
-                        {"id": "product-specifications"},
-                        {"class": "mobile-tab first body-font-size"},
-                        {"id": "eigenschappen"},
-                        {"class": "expert_review_products_shortdesc_left d-block d-lg-none"},
-                        {"id": "specifications"},
-                        {"class": "col-12 px-0 px-lg-4 my-2 product-attributes"},
-                        {"class": "feature-benefit__text-wrap"},
-                        {"class": "product__specs"},
-                        {"class": "slot slot--seperated slot--seperated--has-more-content js_slot-specifications"},
-                        {"class": "v-card__text pa-2 product-specifications__text"},
-                        {"class": "std"}, {"id": "Characteristics"}]
-
-    for class_name in spec_class_names:
-        specification = soup.find(attrs=class_name)
-        if specification:
-            specification = specification.get_text(strip=True)
-            specification = specification.replace('\\n', '').\
-                replace('\\t', '').replace('\\r', '')
-            specification = " ".join(specification.split())
-            break
-
-    return specification
-
-
 def extract_product_text(html):
     soup = BeautifulSoup(html, "lxml")
     title = extract_title(soup)
     description = extract_description(soup)
-    breadcrumbs = extract_breadcrumbs(soup)
-    specifications = extract_specifications(soup)
-    product_text = str(title) + " " + str(description) + " " + str(
-        breadcrumbs) + " " + str(specifications)
+    product_text = str(title) + " " + str(description)
     return product_text

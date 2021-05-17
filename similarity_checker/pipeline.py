@@ -1,7 +1,6 @@
 import spacy
 from distance import jaccard
 from nltk.stem.snowball import SnowballStemmer
-from simhash import Simhash
 
 
 def tokenization(product_text):
@@ -60,20 +59,6 @@ def stemming(tokens_without_sw_and_punct):
     tokens_after_stemming = [tokens_after_stemming1,
                              tokens_after_stemming2]
     return tokens_after_stemming
-
-
-def sim_hash(tokens_after_stemming):
-    vector1 = Simhash(tokens_after_stemming[0])
-    vector2 = Simhash(tokens_after_stemming[1])
-    vector1_value = float(vector1.value)
-    vector2_value = float(vector2.value)
-
-    if vector1_value > vector2_value:
-        similarity = vector2_value/vector1_value
-    else:
-        similarity = vector1_value/vector2_value
-
-    return similarity
 
 
 def jaccard_similarity(tokens_after_stemming):
