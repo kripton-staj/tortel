@@ -1,6 +1,8 @@
 import spacy
 from distance import jaccard
 from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize import RegexpTokenizer
+from nltk.util import everygrams
 
 
 def tokenization(product_text):
@@ -10,13 +12,10 @@ def tokenization(product_text):
     :return: tokens for two product texts
     :rtype: class 'list'
     """
+    tokenizer = RegexpTokenizer(r'\w+')
 
-    nlp = spacy.load("nl_core_news_sm")
-
-    doc1 = nlp(str(product_text[0]))
-    doc2 = nlp(str(product_text[1]))
-    tokens1 = [token.text for token in doc1]
-    tokens2 = [token2.text for token2 in doc2]
+    tokens1 = tokenizer.tokenize(product_text[0])
+    tokens2 = tokenizer.tokenize(product_text[1])
     tokens = [tokens1, tokens2]
 
     return tokens
@@ -58,11 +57,43 @@ def stemming(tokens_without_sw_and_punct):
                               in tokens_without_sw_and_punct[1]]
     tokens_after_stemming = [tokens_after_stemming1,
                              tokens_after_stemming2]
+
     return tokens_after_stemming
 
 
-def jaccard_similarity(tokens_after_stemming):
-    similarity = jaccard(tokens_after_stemming[0],
-                         tokens_after_stemming[1])
+def n_grams(tokens_with_stemming):
+    """
+    Join tokens from the tokens list and creates a two text(type string)
+     without a space. Then, creates n_grams from that texts. Max_len of
+      n_grams indicates as a parameter.
+    :param tokens_with_stemming: List of tokens after stemming
+    :return: two n_grams list for two text
+    :rtype: class 'list'
+    """
+    tokens_without_space1 = ""
+    tokens_without_space2 = ""
+    max_len = 3
 
-    return 1-similarity
+    for token in tokens_with_stemming[0]:
+        tokens_without_space1 += token
+    for token in tokens_with_stemming[1]:
+        tokens_without_space2 += token
+
+    n_grams_1 = list(everygrams(tokens_without_space1,
+                                max_len=max_len))
+    n_grams_2 = list(everygrams(tokens_without_space2,
+                                max_len=max_len))
+    return n_grams_1, n_grams_2
+
+
+def jaccard_similarity(n_grams_1, n_grams_2):
+    """
+    Calculates jaccard similarity between two n_grams list.
+    :param n_grams_1: n_grams list for the first text
+    :param n_grams_2: n_grams list for the second text
+    :return: similarity ratio
+    :rtype: float
+    """
+    similarity = 1 - jaccard(n_grams_1, n_grams_2)
+
+    return similarity
