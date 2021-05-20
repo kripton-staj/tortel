@@ -68,7 +68,3 @@ class TestSimilarityChecker:
                       ('c', 'e'), ('c', 'e', 'r'), ('e',), ('e', 'r'),
                       ('e', 'r', 'a')]
         assert jaccard_similarity(test_data1, test_data2) > 0.7
-
-
-if __name__ == '__main__':
-    test1 = TestSimilarityChecker()
