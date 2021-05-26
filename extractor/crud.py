@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from tortel.common.config import DATABASE_URI
 from tortel.common.models import Base, ProductPage
+from sqlalchemy import func
 
 
 engine = create_engine(DATABASE_URI)
@@ -59,3 +60,12 @@ def print_report():
           ' %d html body %d product_text data'
           % (len(result), number_of_html, number_of_product_text))
 
+
+def get_ean_group():
+    """
+    Query database to get the same products grouped by ean
+    :return: result: product texts which grouped by ean
+    """
+    result = s.query(func.array_agg(ProductPage.product_text),
+                     func.count(ProductPage.ean)).group_by(ProductPage.ean).all()
+    return result
