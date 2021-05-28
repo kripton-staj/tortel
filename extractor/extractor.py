@@ -5,8 +5,12 @@ from bs4 import BeautifulSoup
 
 
 def extract_title(soup):
-    return soup.title.text.replace('\\n', '').\
+    title = soup.title.text.replace('\\n', '').\
         replace('\\t', '').replace('\\r', '')
+    title = " ".join(title.split())
+    title = re.sub(r'[^\x00-\x7F]+', ' ', str(title)). \
+        encode('ascii', 'ignore').decode('unicode_escape').strip()
+    return title
 
 
 def extract_description(soup):
@@ -75,6 +79,5 @@ def extract_description(soup):
 def extract_product_text(html):
     soup = BeautifulSoup(html, "lxml")
     title = extract_title(soup)
-    description = extract_description(soup)
-    product_text = str(title) + " " + str(description)
+    product_text = str(title)
     return product_text
