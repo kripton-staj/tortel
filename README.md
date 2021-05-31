@@ -56,10 +56,10 @@ Product similarity detection with NLP
    ```
 
 
-8. Run the below command to check product similarity with NLP
+8. Run the below command to check product similarity and accuracy ratio
     
    ```
-   python3 product_similarity/product_similarity.py
+   python3 scripts/accuracy_calculator.py
    ```
 
 
