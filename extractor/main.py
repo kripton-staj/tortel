@@ -1,4 +1,5 @@
-from tortel.extractor.crud import print_report, write_product_text, get_product_page, s
+from tortel.extractor.crud import (get_product_page, print_report, s,
+                                   write_product_text)
 from tortel.extractor.extractor import extract_product_text
 
 

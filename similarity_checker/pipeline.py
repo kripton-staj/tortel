@@ -1,8 +1,9 @@
 import spacy
-from distance import jaccard
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from nltk.util import everygrams
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 
 def tokenization(product_text):
@@ -61,7 +62,7 @@ def stemming(tokens_without_sw_and_punct):
     return tokens_after_stemming
 
 
-def n_grams(tokens_with_stemming):
+def create_n_grams(tokens_with_stemming):
     """
     Join tokens from the tokens list and creates a two text(type string)
      without a space. Then, creates n_grams from that texts. Max_len of
@@ -83,17 +84,29 @@ def n_grams(tokens_with_stemming):
                                 max_len=max_len))
     n_grams_2 = list(everygrams(tokens_without_space2,
                                 max_len=max_len))
-    return n_grams_1, n_grams_2
+    n_grams = [n_grams_1, n_grams_2]
+    return n_grams
 
 
-def jaccard_similarity(n_grams_1, n_grams_2):
+def tfidf_vectorizer(n_grams):
     """
-    Calculates jaccard similarity between two n_grams list.
-    :param n_grams_1: n_grams list for the first text
-    :param n_grams_2: n_grams list for the second text
-    :return: similarity ratio
-    :rtype: float
+    Creates vectors for the n_grams by using tfidf vectorizer.
+    :param n_grams: n_grams for the product texts
+    :return: tfidf: tfidf vectors for the n_grams
+    :rtype: class 'scipy.sparse.csr.csr_matrix'
     """
-    similarity = 1 - jaccard(n_grams_1, n_grams_2)
+    vectorizer = TfidfVectorizer(analyzer=lambda x: x)
 
-    return similarity
+    tfidf = vectorizer.fit_transform(n_grams)
+    return tfidf
+
+
+def check_cosine_distance(tfidf):
+    """
+    Calculates cosine distance between vectors by using linear kernel.
+    :param tfidf: vectors for the n_grams
+    :return: cosine_distance: calculated cosine distance between vectors
+    :rtype: class 'numpy.ndarray'
+    """
+    cosine_distance = linear_kernel(tfidf[0], tfidf[1]).flatten()
+    return cosine_distance

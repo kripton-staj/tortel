@@ -1,7 +1,9 @@
 from tortel.extractor.crud import get_ean_group
-from tortel.similarity_checker.pipeline import (jaccard_similarity, n_grams,
+from tortel.similarity_checker.pipeline import (check_cosine_distance,
+                                                create_n_grams,
                                                 remove_stop_words_and_puncts,
-                                                stemming, tokenization)
+                                                stemming, tfidf_vectorizer,
+                                                tokenization)
 
 
 def similarity_calculator():
@@ -20,8 +22,9 @@ def similarity_calculator():
             product_text = group[0]
             stemming_product_text = stemming(
                 remove_stop_words_and_puncts(tokenization(product_text)))
-            first_n_gram, second_n_gram = n_grams(stemming_product_text)
-            similarity = jaccard_similarity(first_n_gram, second_n_gram)
+            n_grams = create_n_grams(stemming_product_text)
+            tfidf = tfidf_vectorizer(n_grams)
+            similarity = check_cosine_distance(tfidf)
             similarity_list.append(similarity)
     return similarity_list
 
@@ -44,8 +47,9 @@ def similarity_calculator_for_different_products():
             product_text.append(second_product)
             stemming_product_text = stemming(
                 remove_stop_words_and_puncts(tokenization(product_text)))
-            first_n_gram, second_n_gram = n_grams(stemming_product_text)
-            similarity = jaccard_similarity(first_n_gram, second_n_gram)
+            n_grams = create_n_grams(stemming_product_text)
+            tfidf = tfidf_vectorizer(n_grams)
+            similarity = check_cosine_distance(tfidf)
             similarity_list2.append(similarity)
     return similarity_list2
 
@@ -60,12 +64,12 @@ def conf_matrix_calculator(similarity_list, similarity_list2):
     """
     tp, fn, tn, fp = 0, 0, 0, 0
     for similarity in similarity_list:
-        if similarity >= 0.3:
+        if similarity >= 0.5:
             tp += 1
         else:
             fn += 1
     for different_similarity in similarity_list2:
-        if different_similarity <= 0.3:
+        if different_similarity < 0.5:
             tn += 1
         else:
             fp += 1
@@ -78,7 +82,7 @@ def accuracy_calculator(tp, tn, fp, fn):
     :param tp: number of true positive
     :param tn: number of true negative
     :param fp: number of false positive
-    :param fn: number of true negative
+    :param fn: number of false negative
     :return: accuracy score
     :rtype: float
     """
@@ -91,4 +95,4 @@ list1 = similarity_calculator()
 list2 = similarity_calculator_for_different_products()
 t_pos, t_neg, f_pos, f_neg = conf_matrix_calculator(list1, list2)
 accuracy_score = accuracy_calculator(t_pos, t_neg, f_pos, f_neg)
-print(accuracy_score)
+print("accuracy: ", accuracy_score)

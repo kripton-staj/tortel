@@ -1,4 +1,4 @@
-from similarity_checker.pipeline import (jaccard_similarity, n_grams,
+from similarity_checker.pipeline import (create_n_grams,
                                          remove_stop_words_and_puncts,
                                          stemming, tokenization)
 
@@ -61,10 +61,13 @@ class TestSimilarityChecker:
 
         assert all([a == b for a, b in zip(actual, expected)])
 
-    def test_jaccard_similarity(self):
-        test_data1 = [('a',), ('a', 'c'), ('a', 'c', 'e'), ('c',),
-                      ('c', 'e'), ('c', 'e', 'r'), ('e',)]
-        test_data2 = [('a',), ('a', 'c'), ('a', 'c', 'e'), ('c',),
-                      ('c', 'e'), ('c', 'e', 'r'), ('e',), ('e', 'r'),
-                      ('e', 'r', 'a')]
-        assert jaccard_similarity(test_data1, test_data2) > 0.7
+    def test_create_n_grams(self):
+        test_data = [['sony'], ['12']]
+
+        actual = create_n_grams(test_data)
+        expected = [[('s',), ('s', 'o'), ('s', 'o', 'n'), ('o',),
+                     ('o', 'n'), ('o', 'n', 'y'), ('n',),
+                     ('n', 'y'), ('y',)],
+                    [('1',), ('1', '2'), ('2',)]]
+
+        assert all([a == b for a, b in zip(actual, expected)])
