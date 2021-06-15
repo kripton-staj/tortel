@@ -1,67 +1,16 @@
-from tortel.extractor.crud import get_ean_group
-from tortel.similarity_checker.pipeline import (check_cosine_distance,
-                                                create_n_grams,
-                                                remove_stop_words_and_puncts,
-                                                stemming, tfidf_vectorizer,
-                                                tokenization)
+from tortel.scripts.similarity_calculator import (
+    similarity_calculator_for_different_products,
+    similarity_calculator_for_same_products)
 
 
-def similarity_calculator():
-    """
-    Calculate similarity ratio for the two product that have the same ean.
-     Append all similarity ratios into a list.
-    :return: list of similarity ratios
-    :rtype: class list
-    """
-    ean_group = get_ean_group()
-    similarity_list = []
-    for group in ean_group:
-        first_product = group[0][0]
-        second_product = group[0][1]
-        if first_product and second_product:
-            product_text = group[0]
-            stemming_product_text = stemming(
-                remove_stop_words_and_puncts(tokenization(product_text)))
-            n_grams = create_n_grams(stemming_product_text)
-            tfidf = tfidf_vectorizer(n_grams)
-            similarity = check_cosine_distance(tfidf)
-            similarity_list.append(similarity)
-    return similarity_list
-
-
-def similarity_calculator_for_different_products():
-    """
-    Calculate similarity ratio for the two different product.
-     Append all similarity ratios into a list.
-    :return: list of similarity ratios
-    :rtype: class list
-    """
-    ean_group = get_ean_group()
-    similarity_list2 = []
-    for text in range(len(ean_group)-1):
-        first_product = ean_group[text][0][0]
-        second_product = ean_group[text+1][0][0]
-        product_text = []
-        if first_product and second_product:
-            product_text.append(first_product)
-            product_text.append(second_product)
-            stemming_product_text = stemming(
-                remove_stop_words_and_puncts(tokenization(product_text)))
-            n_grams = create_n_grams(stemming_product_text)
-            tfidf = tfidf_vectorizer(n_grams)
-            similarity = check_cosine_distance(tfidf)
-            similarity_list2.append(similarity)
-    return similarity_list2
-
-
-def conf_matrix_calculator(similarity_list, similarity_list2):
+def conf_matrix_calculator():
     """
     Calculates confusion matrix
-    :param similarity_list: similarity ratios for the same products
-    :param similarity_list2: similarity ratios for the different products
     :return: true positive, true negative, false positive, false negative
     :rtype: int, int, int, int
     """
+    similarity_list = similarity_calculator_for_same_products()
+    similarity_list2 = similarity_calculator_for_different_products()
     tp, fn, tn, fp = 0, 0, 0, 0
     for similarity in similarity_list:
         if similarity >= 0.5:
@@ -91,8 +40,6 @@ def accuracy_calculator(tp, tn, fp, fn):
     return accuracy
 
 
-list1 = similarity_calculator()
-list2 = similarity_calculator_for_different_products()
-t_pos, t_neg, f_pos, f_neg = conf_matrix_calculator(list1, list2)
+t_pos, t_neg, f_pos, f_neg = conf_matrix_calculator()
 accuracy_score = accuracy_calculator(t_pos, t_neg, f_pos, f_neg)
 print("accuracy: ", accuracy_score)
