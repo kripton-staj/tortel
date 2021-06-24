@@ -1,6 +1,9 @@
 # tortel
 Product similarity detection with NLP
 
+![tortel](https://user-images.githubusercontent.com/3041416/123288171-9a9ae400-d50f-11eb-9640-2bde965a817f.png)
+
+
 ### requirements  :  
 * Python 3.9
 * Postgresql 10.15
