@@ -2,4 +2,4 @@
 # <USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 
 DATABASE_URI = 'postgresql+psycopg2://' \
-               'postgres:gizliparola@localhost:5432/product'
+               'postgres:writeyourpasswordhere@localhost:5432/product'
